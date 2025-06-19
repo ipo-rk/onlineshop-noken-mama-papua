@@ -782,7 +782,12 @@
     // Auto-refresh produk jika ada perubahan dari dashboard
     window.addEventListener('storage', function (e) {
       if (['products', 'products2', 'products3'].includes(e.key)) {
-        location.reload(); // Reload halaman agar produk terbaru langsung muncul
+        // Jika Alpine cartHandler sudah terinisialisasi dan punya loadFromLocalStorage, update produk tanpa reload
+        if (window.cartHandler && typeof window.cartHandler().loadFromLocalStorage === 'function') {
+          window.cartHandler().loadFromLocalStorage();
+        } else {
+          location.reload(); // Fallback jika Alpine belum siap
+        }
       }
     });
   </script>
