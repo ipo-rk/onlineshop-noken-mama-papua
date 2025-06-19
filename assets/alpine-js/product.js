@@ -434,7 +434,11 @@ userLogin() {
         } catch {}
         localStorage.removeItem('pendingAddToCart');
       }
-      window.location.href = 'index.html';
+      // Hanya redirect jika belum di index.html
+      const path = window.location.pathname.split('/').pop();
+      if (path !== 'index.html' && path !== '') {
+        window.location.href = 'index.html';
+      }
     });
   } else {
     Swal.fire('Error', 'Email atau password salah!', 'error');
