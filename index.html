@@ -36,7 +36,8 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body class="index-page" x-data="cartHandler()" x-init="loadFromLocalStorage()">
+<body class="index-page" x-data="cartHandler()"
+  x-init="loadFromLocalStorage(); isUserLoggedIn = localStorage.getItem('isUserLoggedIn') === 'true'">
   <header id="header" class="header fixed-top">
     <div class="topbar d-flex align-items-center">
       <div class="container d-flex justify-content-end justify-content-md-between">
@@ -57,7 +58,7 @@
 
 
           <!-- Tambahkan ikon logout, tampil hanya jika user login -->
-          <template x-if="localStorage.getItem('isUserLoggedIn') === 'true'">
+          <template x-if="isUserLoggedIn">
             <i class="bi bi-box-arrow-right icon text-white ms-2" style="cursor:pointer; vertical-align: middle;"
               @click="logout()" title="Logout"></i>
           </template>
@@ -772,25 +773,6 @@
         style="background-color: var(--accent-color); border: none;">Order Sekarang</button>
     </div>
   </div>
-
-  <script>
-    document.addEventListener('alpine:init', () => {
-      console.log('loggedInRole:', localStorage.getItem('loggedInRole'));
-      console.log('loggedInUserEmail:', localStorage.getItem('loggedInUserEmail'));
-    });
-
-    // Auto-refresh produk jika ada perubahan dari dashboard
-    window.addEventListener('storage', function (e) {
-      if (['products', 'products2', 'products3'].includes(e.key)) {
-        // Jika Alpine cartHandler sudah terinisialisasi dan punya loadFromLocalStorage, update produk tanpa reload
-        if (window.cartHandler && typeof window.cartHandler().loadFromLocalStorage === 'function') {
-          window.cartHandler().loadFromLocalStorage();
-        } else {
-          location.reload(); // Fallback jika Alpine belum siap
-        }
-      }
-    });
-  </script>
 
 </body>
 

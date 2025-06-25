@@ -617,6 +617,7 @@ userLogin() {
           prod.inCart = this.cart.some(item => item.name === prod.name);
         });
       });
+      this.isUserLoggedIn = localStorage.getItem('isUserLoggedIn') === 'true';
     },
     // CRUD produk hanya update localStorage dan allProducts
     loadProducts() {
