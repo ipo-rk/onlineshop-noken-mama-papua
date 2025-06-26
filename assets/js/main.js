@@ -75,25 +75,31 @@
   /**
    * Scroll top button
    */
-  let scrollTop = document.querySelector('.scroll-top');
-  function toggleScrollTop() {
-    if (scrollTop) {
-      window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+  // Pastikan scrollTop diambil setelah DOM siap
+  let scrollTop;
+  function initScrollTop() {
+    scrollTop = document.querySelector('.scroll-top');
+    function toggleScrollTop() {
+      if (scrollTop) {
+        window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+      }
     }
-  }
-  if (scrollTop) {
-    scrollTop.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+    if (scrollTop) {
+      scrollTop.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
       });
-    });
-  } else {
-    console.error('Element .scroll-top not found');
+    } else {
+      // Hanya tampilkan error sekali di DOMContentLoaded, bukan saat file di-load
+      console.error('Element .scroll-top not found');
+    }
+    window.addEventListener('load', toggleScrollTop);
+    document.addEventListener('scroll', toggleScrollTop);
   }
-  window.addEventListener('load', toggleScrollTop);
-  document.addEventListener('scroll', toggleScrollTop);
+  window.addEventListener('DOMContentLoaded', initScrollTop);
 
   /**
    * Animation on scroll function and init

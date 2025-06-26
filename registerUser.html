@@ -38,15 +38,11 @@
     <!-- sweet alert -->
     <script src="assets/js/sweetalert2.all.min.js"></script>
 
-    <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <!-- Facebook SDK -->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 </head>
 
-<body class="index-page" x-data="cartHandler()" x-init="init()">
+<body class="index-page" x-data="{...cartHandler(), sidebarOpen: false, activePage: 'dashboard'}"
+    x-init="sidebarOpen = false; init();">
 
     <header id="header" class="header fixed-top">
 
@@ -56,68 +52,64 @@
     <main class="main">
         <!-- About Section -->
         <section id="about" class="about section light-background my-1 py-5">
-            <div class="container section-title pb-5" data-aos="fade-up">
+            <div class="container section-title pb-3" data-aos="fade-up">
                 <h2>Register User</h2>
 
             </div>
             <div class="container d-flex align-items-center justify-content-center ">
                 <div class="card shadow p-4 mx-auto" style="width:100%;max-width:400px;">
 
-                    <form @submit.prevent="userRegister" autocomplete="off">
+                    <form id="registerForm" autocomplete="off">
                         <div class="mb-2">
                             <label for="name" class="form-label">Nama Lengkap</label>
-                            <input type="text" id="name" class="form-control" x-model="registerName" required
-                                autocomplete="off">
+                            <input type="text" id="name" class="form-control" required autocomplete="off">
                         </div>
                         <div class="mb-2">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" class="form-control" x-model="registerEmail" required
-                                autocomplete="off">
+                            <input type="email" id="email" class="form-control" required autocomplete="off">
                         </div>
-
                         <div class="mb-2">
                             <label for="password" class="form-label">Password</label>
                             <div class="input-group">
-                                <input :type="registerPasswordVisible ? 'text' : 'password'" id="password"
-                                    class="form-control" x-model="registerPassword" required
+                                <input type="password" id="password" class="form-control" required
                                     autocomplete="new-password">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    @click="registerPasswordVisible = !registerPasswordVisible" tabindex="-1">
-                                    <i :class="registerPasswordVisible ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="passwordConfirm" class="form-label">Konfirmasi Password</label>
                             <div class="input-group">
-                                <input :type="registerPasswordVisible ? 'text' : 'password'" id="passwordConfirm"
-                                    class="form-control" x-model="registerPasswordConfirm" required
+                                <input type="password" id="passwordConfirm" class="form-control" required
                                     autocomplete="new-password">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    @click="registerPasswordVisible = !registerPasswordVisible" tabindex="-1">
-                                    <i :class="registerPasswordVisible ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirm">
+                                    <i class="bi bi-eye"></i>
                                 </button>
                             </div>
                         </div>
-
                         <button type="submit" class="btn btn-primary w-100">Register</button>
                         <div class="text-center mt-3">
                             <span>Sudah punya akun?</span>
                             <a href="loginUser.html" class="text-primary fw-semibold">Kembali ke Login</a>
                         </div>
                     </form>
-                    <!-- Google Sign-In Button -->
-                    <div class="mb-3 text-center mt-3">
-                        <div id="g_id_onload" data-client_id="google.com" data-context="signup" data-ux_mode="popup"
-                            data-callback="handleGoogleSignIn" data-auto_prompt="false"></div>
-                        <div class="g_id_signin" data-type="standard" data-shape="circle" data-theme="outline"
-                            data-text="sign_in_with" data-size="large" data-logo_alignment="left"></div>
-                        <!-- Facebook Login Button -->
-                        <div class="mt-3">
-                            <div class="fb-login-button" data-width="" data-size="large"
-                                data-button-type="continue_with" data-layout="default" data-auto-logout-link="false"
-                                data-use-continue-as="true" data-onlogin="handleFacebookLogin();"></div>
-                        </div>
+                    <!-- Google & Facebook Login Buttons (UI Only) -->
+                    <div class="mb-3 text-center mt-3 d-flex flex-column align-items-center gap-2">
+                        <button type="button"
+                            class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 w-100"
+                            style="max-width:320px;">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                                alt="Google" style="width:24px;height:24px;">
+                            <span class="flex-grow-1 text-center">Daftar dengan Google</span>
+                        </button>
+                        <button type="button"
+                            class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 w-100"
+                            style="max-width:320px;">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg"
+                                alt="Facebook" style="width:24px;height:24px;">
+                            <span class="flex-grow-1 text-center">Daftar dengan Facebook</span>
+                        </button>
                     </div>
                 </div>
 
@@ -133,7 +125,7 @@
 
 
     <!-- Preloader -->
-    <div id="preloader">
+    <div id="preloader" class="bg-light">
         <img src="assets/img/favicon.png" alt="Noken Papua" id="preloader-img">
     </div>
 
@@ -155,68 +147,94 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('cartHandler', cartHandler);
         });
-    </script>
-    <script>
-        // Google Sign-In handler (sudah ada)
-        function handleGoogleSignIn(response) {
-            const data = parseJwt(response.credential);
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            if (!users.some(u => u.email === data.email)) {
-                users.push({ email: data.email, password: '' });
-                localStorage.setItem('users', JSON.stringify(users));
+        // Handler register user
+        function userRegister() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+            if (!name || !email || !password || !passwordConfirm) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Semua field wajib diisi!' });
+                return;
             }
-            localStorage.setItem('isUserLoggedIn', 'true');
-            localStorage.setItem('userEmail', data.email);
-            window.location.href = 'index.html';
-        }
-        function parseJwt(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        }
-
-        // Facebook Login handler
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '1568572250619786', // Sudah diganti dengan App ID Facebook Anda
-                cookie: true,
-                xfbml: true,
-                version: 'v19.0'
+            if (password !== passwordConfirm) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Konfirmasi password tidak cocok!' });
+                return;
+            }
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(u => u.email === email)) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Email sudah terdaftar!' });
+                return;
+            }
+            users.push({
+                name: name,
+                email: email,
+                password: password,
+                registeredAt: new Date().toISOString(),
+                role: 'user'
             });
-            // Paksa render ulang tombol Facebook setelah SDK siap
-            FB.XFBML.parse();
-        };
-        function handleFacebookLogin() {
-            FB.getLoginStatus(function (response) {
-                if (response.status === 'connected') {
-                    FB.api('/me', { fields: 'name,email' }, function (userInfo) {
-                        const users = JSON.parse(localStorage.getItem('users')) || [];
-                        if (!users.some(u => u.email === userInfo.email)) {
-                            users.push({ email: userInfo.email, password: '' });
-                            localStorage.setItem('users', JSON.stringify(users));
-                        }
-                        localStorage.setItem('isUserLoggedIn', 'true');
-                        localStorage.setItem('userEmail', userInfo.email);
-                        window.location.href = 'index.html';
-                    });
-                }
+            localStorage.setItem('users', JSON.stringify(users));
+            Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Registrasi user berhasil!' }).then(() => {
+                window.location.href = 'loginUser.html';
             });
         }
-        // Tambahan: retry FB.XFBML.parse() jika tombol tidak muncul
-        document.addEventListener('DOMContentLoaded', function () {
-            let retry = 0;
-            function tryParseFB() {
-                if (window.FB && FB.XFBML) {
-                    FB.XFBML.parse();
-                } else if (retry < 10) {
-                    retry++;
-                    setTimeout(tryParseFB, 500);
-                }
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
             }
-            setTimeout(tryParseFB, 1000);
+        });
+        document.getElementById('togglePasswordConfirm').addEventListener('click', function () {
+            const passwordInput = document.getElementById('passwordConfirm');
+            const icon = this.querySelector('i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+            if (!name || !email || !password || !passwordConfirm) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Semua field wajib diisi!' });
+                return;
+            }
+            if (password !== passwordConfirm) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Konfirmasi password tidak cocok!' });
+                return;
+            }
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(u => u.email === email)) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Email sudah terdaftar!' });
+                return;
+            }
+            users.push({
+                name: name,
+                email: email,
+                password: password,
+                registeredAt: new Date().toISOString(),
+                role: 'user'
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+            // Setelah berhasil register, langsung redirect ke login
+            Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Registrasi user berhasil! Silakan login.' }).then(() => {
+                window.location.href = 'loginUser.html';
+            });
         });
     </script>
 

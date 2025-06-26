@@ -203,6 +203,11 @@ login() {
         });
         return;
       }
+      // Otomatis isi nama user yang login ke form checkout
+      const loggedInUserName = localStorage.getItem('loggedInUserName');
+      if (loggedInUserName) {
+        this.customerData.name = loggedInUserName;
+      }
       // Tampilkan form data diri
       this.showForm = true;
     },
@@ -498,7 +503,9 @@ userLogin() {
     },
 
     openCartSidebar() {
+      // Cek login user sebelum buka sidebar/cart
       if (localStorage.getItem('isUserLoggedIn') !== 'true') {
+        // Simpan state jika ingin redirect kembali setelah login (opsional)
         window.location.href = 'loginUser.html';
         return;
       }

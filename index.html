@@ -38,6 +38,7 @@
 
 <body class="index-page" x-data="cartHandler()"
   x-init="loadFromLocalStorage(); isUserLoggedIn = localStorage.getItem('isUserLoggedIn') === 'true'">
+
   <header id="header" class="header fixed-top">
     <div class="topbar d-flex align-items-center">
       <div class="container d-flex justify-content-end justify-content-md-between">
@@ -722,7 +723,7 @@
       class="bi bi-arrow-up-short"></i></a>
 
   <!-- Preloader -->
-  <div id="preloader">
+  <div id="preloader" class="bg-light">
     <img src="assets/img/favicon.png" alt="Noken Papua" id="preloader-img">
   </div>
 
@@ -773,6 +774,15 @@
         style="background-color: var(--accent-color); border: none;">Order Sekarang</button>
     </div>
   </div>
+
+  <script>
+    // Set nama user ke Alpine dari localStorage jika ada
+    document.addEventListener('alpine:init', () => {
+      if (localStorage.getItem('loggedInUserName')) {
+        window.loggedInUserName = localStorage.getItem('loggedInUserName');
+      }
+    });
+  </script>
 
 </body>
 
