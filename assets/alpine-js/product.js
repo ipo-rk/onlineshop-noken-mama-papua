@@ -258,6 +258,9 @@ login() {
       const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
       transactions.push(newTransaction);
       localStorage.setItem('transactions', JSON.stringify(transactions));
+      // Sinkronisasi ke dashboard admin (trigger event storage manual)
+      if (window.triggerDashboardSync) window.triggerDashboardSync('transactions');
+      window.dispatchEvent(new StorageEvent('storage', { key: 'transactions', newValue: JSON.stringify(transactions) }));
 
       // Tampilkan resi pesanan
       let itemsHtml = newTransaction.items.map(item =>
@@ -394,6 +397,9 @@ userRegister() {
   localStorage.setItem('users', JSON.stringify(users));
   localStorage.setItem('loggedInUserName', this.registerName); // Simpan nama pengguna
   this.loggedInUserName = this.registerName; // Perbarui nama pengguna di aplikasi
+  // Sinkronisasi ke dashboard admin (trigger event storage manual)
+  if (window.triggerDashboardSync) window.triggerDashboardSync('users');
+  window.dispatchEvent(new StorageEvent('storage', { key: 'users', newValue: JSON.stringify(users) }));
   Swal.fire('Berhasil', 'Registrasi berhasil! Silakan login.', 'success').then(() => {
     window.location.href = 'loginUser.html';
   });
