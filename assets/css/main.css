@@ -1350,7 +1350,7 @@ section,
   }
 
   .specials .nav-link.active {
-    color: var(--background-color);
+    color: var(--contrast-color);
     background: var(--accent-color);
   }
 }
